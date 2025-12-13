@@ -2,173 +2,156 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>台灣人口結構戰情室：手機優化版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>台灣人口戰情室：極致清爽版</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
     <style>
         :root {
-            --primary-blue: #3498db;
-            --primary-red: #e74c3c;
-            --primary-purple: #9b59b6;
-            --primary-yellow: #f1c40f;
-            --primary-green: #2ecc71;
+            --primary-blue: #2980b9;
+            --primary-red: #c0392b;
+            --primary-purple: #8e44ad;
+            --primary-yellow: #f39c12;
+            --primary-green: #27ae60;
             --primary-brown: #d35400;
-            --dark-bg: #2c3e50;
-            --light-bg: #f4f6f9;
+            --bg-gray: #f8f9fa;
+            --text-main: #2c3e50;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", Roboto, Arial, sans-serif;
-            background-color: var(--light-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-gray);
             margin: 0;
-            padding: 10px;
-            color: #333;
+            padding: 10px 5px; /* 減少邊距 */
+            color: var(--text-main);
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 800px; /* 限制最大寬度，電腦看也不會太寬 */
             margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 15px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        header { text-align: center; margin-bottom: 20px; }
-        h1 { color: var(--dark-bg); margin: 0; font-size: clamp(1.3rem, 4vw, 2.2rem); line-height: 1.4; }
-        .subtitle { color: #7f8c8d; font-size: clamp(0.85rem, 3vw, 1.1rem); margin-top: 8px; }
+        header { text-align: center; margin-bottom: 15px; }
+        h1 { margin: 0; font-size: 1.2rem; line-height: 1.3; color: #333; }
+        .subtitle { color: #666; font-size: 0.8rem; margin-top: 5px; }
 
-        /* --- 控制台 (手機優化重點) --- */
-        .controls-panel {
-            background: #fff8f0;
-            border: 1px solid #ffe0b2;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .control-header {
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: var(--primary-brown);
-            font-size: 0.9rem;
-        }
-
-        .button-grid {
+        /* --- 1. 橫向捲動卡片 (解決佔位問題) --- */
+        .cards-scroll-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            scroll-snap-type: x mandatory; /* 滑動吸附效果 */
+            -webkit-overflow-scrolling: touch;
         }
-
-        .toggle-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center; /* 文字置中 */
-            cursor: pointer;
-            padding: 8px 12px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            transition: all 0.2s;
-            user-select: none;
-            font-size: 0.9rem;
-            color: #666;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            white-space: nowrap; /* 防止文字換行 */
-        }
-
-        /* 手機版樣式覆寫 */
-        @media (max-width: 600px) {
-            .button-grid {
-                display: grid; /* 改用 Grid 佈局 */
-                grid-template-columns: 1fr 1fr; /* 強制兩欄，整齊排列 */
-                gap: 8px;
-            }
-            .toggle-btn {
-                width: 100%; /* 填滿格子 */
-                font-size: 0.85rem;
-                padding: 8px 4px;
-            }
-            .container { padding: 15px 10px; }
-        }
-
-        .toggle-btn:hover { background: #f1f1f1; transform: translateY(-1px); }
-        .toggle-btn input { display: none; }
-        .toggle-btn.active { border-color: transparent; color: white; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
-
-        .btn-blue.active { background-color: var(--primary-blue); }
-        .btn-red.active { background-color: var(--primary-red); }
-        .btn-purple.active { background-color: var(--primary-purple); }
-        .btn-yellow.active { background-color: #f39c12; }
-        .btn-green.active { background-color: var(--primary-green); }
-        .btn-brown.active { background-color: var(--primary-brown); }
         
-        .indicator-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; background: #ccc; border: 1px solid white; }
-        .toggle-btn.active .indicator-dot { background: white; }
-
-        /* --- 數據卡片 --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* 手機版自動縮小卡片寬度 */
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        /* 隱藏捲軸但保留功能 */
+        .cards-scroll-container::-webkit-scrollbar { display: none; } 
 
         .stat-card {
-            padding: 15px; border-radius: 12px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;
-            min-height: 90px;
+            flex: 0 0 140px; /* 固定卡片寬度 */
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border-left: 4px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .stat-card::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0)); pointer-events: none; }
-        .stat-card h3 { margin: 0; font-size: 0.8rem; opacity: 0.95; }
-        .stat-card .value { font-size: 1.3rem; font-weight: bold; margin: 4px 0; }
-        .stat-card .desc { font-size: 0.7rem; opacity: 0.9; }
 
-        .bg-green { background: linear-gradient(135deg, #27ae60, #2ecc71); }
-        .bg-brown { background: linear-gradient(135deg, #d35400, #a04000); }
-        .bg-dark { background: linear-gradient(135deg, #34495e, #2c3e50); }
-        .bg-red-alert { background: linear-gradient(135deg, #c0392b, #922b21); }
+        .stat-card h3 { margin: 0; font-size: 0.75rem; color: #666; }
+        .stat-card .value { font-size: 1.1rem; font-weight: bold; margin: 4px 0; color: #333; }
+        .stat-card .desc { font-size: 0.65rem; color: #999; }
 
-        /* --- 圖表區域 (手機高度優化) --- */
+        .c-blue { border-left-color: var(--primary-blue); }
+        .c-red { border-left-color: var(--primary-red); }
+        .c-green { border-left-color: var(--primary-green); }
+        .c-brown { border-left-color: var(--primary-brown); }
+        .c-dark { border-left-color: #34495e; }
+
+        /* --- 2. 標籤式開關 (Chips) --- */
+        .controls-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .chip {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: #eee;
+            color: #666;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .chip input { display: none; }
+        .chip-dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: #999; }
+
+        /* 激活狀態 */
+        .chip.active { background: #eef2f5; color: #333; font-weight: bold; border-color: #ccc; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        /* 個別顏色激活 */
+        .chip.active.t-blue { color: var(--primary-blue); border-color: var(--primary-blue); background: #ebf5fb; }
+        .chip.active.t-blue .chip-dot { background: var(--primary-blue); }
+
+        .chip.active.t-red { color: var(--primary-red); border-color: var(--primary-red); background: #fdedec; }
+        .chip.active.t-red .chip-dot { background: var(--primary-red); }
+
+        .chip.active.t-purple { color: var(--primary-purple); border-color: var(--primary-purple); background: #f4ecf7; }
+        .chip.active.t-purple .chip-dot { background: var(--primary-purple); }
+
+        .chip.active.t-green { color: var(--primary-green); border-color: var(--primary-green); background: #eafaf1; }
+        .chip.active.t-green .chip-dot { background: var(--primary-green); }
+
+        .chip.active.t-brown { color: var(--primary-brown); border-color: var(--primary-brown); background: #fdf2e9; }
+        .chip.active.t-brown .chip-dot { background: var(--primary-brown); }
+
+        .chip.active.t-yellow { color: #d68910; border-color: var(--primary-yellow); background: #fef9e7; }
+        .chip.active.t-yellow .chip-dot { background: var(--primary-yellow); }
+
+
+        /* --- 3. 圖表區域 (高度拉長) --- */
         .chart-wrapper {
             position: relative;
+            height: 480px; /* 手機上拉高，讓Y軸不擁擠 */
             width: 100%;
-            height: 600px; /* 電腦版高度 */
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 600px) {
-            .chart-wrapper {
-                height: 500px; /* 手機版稍微拉高，讓垂直標籤不擁擠，但不過長 */
-            }
+        /* 表格優化 */
+        .table-wrap { overflow-x: auto; margin-top: 20px; border-top: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 600px; }
+        th, td { padding: 8px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+        th { background: #f8f8f8; font-weight: bold; color: #555; }
+        .highlight-cell { font-weight: bold; color: var(--primary-red); }
+
+        /* 說明區 */
+        .info-box {
+            background: #fdfefe;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.5;
         }
-
-        /* 表格與說明 */
-        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid #eee; margin-bottom: 30px; max-height: 500px; overflow-y: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 900px; }
-        th { background-color: var(--dark-bg); color: white; padding: 10px; position: sticky; top: 0; z-index: 10; white-space: nowrap; }
-        td { padding: 8px 6px; text-align: center; border-bottom: 1px solid #eee; white-space: nowrap; }
-        .negative-val { color: #c0392b; font-weight: bold; }
-        .dragon-row { background-color: #fffde7; }
-        .pressure-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
-        .pressure-low { background-color: #d5f5e3; color: #1e8449; }
-        .pressure-mid { background-color: #fcf3cf; color: #b7950b; }
-        .pressure-high { background-color: #fadbd8; color: #922b21; }
-
-        .footer-note { background-color: #fffaf0; border-left: 5px solid var(--primary-brown); padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 0.9rem; }
-        .footer-title { font-weight: bold; margin-bottom: 10px; color: var(--dark-bg); }
-        .definition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
-        .def-card { background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .def-card h5 { margin: 0 0 5px 0; font-size: 0.95rem; }
-        .def-card p { margin: 0; font-size: 0.85rem; color: #666; line-height: 1.4; }
-        .def-card.young { border-left-color: var(--primary-green); } .def-card.young h5 { color: var(--primary-green); }
-        .def-card.old { border-left-color: var(--primary-brown); } .def-card.old h5 { color: var(--primary-brown); }
-        .def-card.total { border-left-color: var(--primary-purple); } .def-card.total h5 { color: var(--primary-purple); }
     </style>
 </head>
 <body>
@@ -176,170 +159,140 @@
 <div class="container">
     <header>
         <h1>台灣人口結構戰情室</h1>
-        <div class="subtitle">1970-2025 老化趨勢互動圖解</div>
+        <div class="subtitle">左右滑動下方卡片 • 點擊標籤切換指標</div>
     </header>
 
-    <div class="controls-panel">
-        <div class="control-header">▼ 點擊按鈕切換顯示指標 ▼</div>
-        <div class="button-grid">
-            <label class="toggle-btn btn-blue active">
-                <input type="checkbox" checked onchange="toggleDataset(0, this)"> <span class="indicator-dot"></span> 出生人數
-            </label>
-            <label class="toggle-btn btn-red active">
-                <input type="checkbox" checked onchange="toggleDataset(1, this)"> <span class="indicator-dot"></span> 死亡人數
-            </label>
-            <label class="toggle-btn btn-purple active">
-                <input type="checkbox" checked onchange="toggleDataset(2, this)"> <span class="indicator-dot"></span> 總扶養比
-            </label>
-            <label class="toggle-btn btn-green active">
-                <input type="checkbox" checked onchange="toggleDataset(3, this)"> <span class="indicator-dot"></span> 扶幼比
-            </label>
-            <label class="toggle-btn btn-brown active">
-                <input type="checkbox" checked onchange="toggleDataset(4, this)"> <span class="indicator-dot"></span> 扶老比
-            </label>
-            <label class="toggle-btn btn-yellow active">
-                <input type="checkbox" checked onchange="toggleDataset(5, this)"> <span class="indicator-dot"></span> 總人口
-            </label>
+    <div class="cards-scroll-container">
+        <div class="stat-card c-green">
+            <h3>勞動力高峰</h3>
+            <div class="value">2015年</div>
+            <div class="desc">1,737萬人</div>
+        </div>
+        <div class="stat-card c-brown">
+            <h3>結構交叉 (老>幼)</h3>
+            <div class="value">2017年</div>
+            <div class="desc">老化指數破100%</div>
+        </div>
+        <div class="stat-card c-dark">
+            <h3>生死交叉 (死>生)</h3>
+            <div class="value">2020年</div>
+            <div class="desc">自然增加率轉負</div>
+        </div>
+        <div class="stat-card c-red">
+            <h3>超高齡社會</h3>
+            <div class="value">2025年</div>
+            <div class="desc">每5人有1老人</div>
+        </div>
+        <div class="stat-card c-blue">
+            <h3>出生最高峰</h3>
+            <div class="value">1976年</div>
+            <div class="desc">42.5萬新生兒</div>
         </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card bg-green">
-            <h3>勞動力高峰 (2015)</h3>
-            <div class="value">1,737 萬</div>
-            <div class="desc">工作人口頂點</div>
-        </div>
-        <div class="stat-card bg-brown">
-            <h3>結構交叉 (2017)</h3>
-            <div class="value">老人 > 小孩</div>
-            <div class="desc">老化指數破百</div>
-        </div>
-        <div class="stat-card bg-dark">
-            <h3>生死交叉 (2020)</h3>
-            <div class="value">生不如死</div>
-            <div class="desc">人口自然減少</div>
-        </div>
-        <div class="stat-card bg-red-alert">
-            <h3>超高齡化 (2025)</h3>
-            <div class="value">20% 老人</div>
-            <div class="desc">每5人有1老人</div>
-        </div>
+    <div class="controls-chips">
+        <label class="chip t-blue active">
+            <input type="checkbox" checked onchange="toggleDataset(0, this)">
+            <span class="chip-dot"></span>出生
+        </label>
+        <label class="chip t-red active">
+            <input type="checkbox" checked onchange="toggleDataset(1, this)">
+            <span class="chip-dot"></span>死亡
+        </label>
+        <label class="chip t-purple">
+            <input type="checkbox" onchange="toggleDataset(2, this)">
+            <span class="chip-dot"></span>總扶養比
+        </label>
+        <label class="chip t-green">
+            <input type="checkbox" onchange="toggleDataset(3, this)">
+            <span class="chip-dot"></span>扶幼比
+        </label>
+        <label class="chip t-brown active">
+            <input type="checkbox" checked onchange="toggleDataset(4, this)">
+            <span class="chip-dot"></span>扶老比
+        </label>
+        <label class="chip t-yellow">
+            <input type="checkbox" onchange="toggleDataset(5, this)">
+            <span class="chip-dot"></span>總人口
+        </label>
     </div>
 
     <div class="chart-wrapper">
         <canvas id="mainChart"></canvas>
     </div>
 
-    <div class="table-container">
+    <div class="info-box">
+        <strong>📊 操作提示：</strong>
+        <ul style="margin: 5px 0 0 20px; padding: 0;">
+            <li>圖表預設僅顯示「出生、死亡、扶老比」，保持畫面清爽。</li>
+            <li>點擊上方標籤可開啟「扶幼比」或「總人口」。</li>
+            <li>手機版圖表已拉高，請上下滑動查看完整資訊。</li>
+        </ul>
+    </div>
+
+    <div class="table-wrap">
         <table id="dataTable">
             <thead>
                 <tr>
                     <th>年度</th>
                     <th>出生</th>
                     <th>死亡</th>
-                    <th>總人口(萬)</th>
-                    <th>自然增加</th>
-                    <th>扶幼比</th>
+                    <th>總人口</th>
                     <th>扶老比</th>
-                    <th>總扶養比</th>
-                    <th>壓力解讀</th>
+                    <th>壓力</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
-    </div>
-
-    <div class="footer-note">
-        <div class="footer-title">💡 數據解讀小百科</div>
-        <div class="definition-grid">
-            <div class="def-card young">
-                <h5>👶 扶幼比</h5>
-                <p>每100個工作人口需負擔的小孩數。數值一路下滑，反映嚴重少子化。</p>
-            </div>
-            <div class="def-card old">
-                <h5>👵 扶老比 (關鍵!)</h5>
-                <p>每100個工作人口需負擔的老人數。<strong>J型曲線飆升</strong>，是目前最大的社會挑戰。</p>
-            </div>
-            <div class="def-card total">
-                <h5>📉 人口老化三階段</h5>
-                <p>
-                    1993 高齡化(7%) ➜ 2018 高齡(14%) ➜ 2025 超高齡(20%)。<br>
-                    <span style="color:#d35400;">*台灣僅用7年就從高齡轉入超高齡社會。</span>
-                </p>
-            </div>
-        </div>
     </div>
 </div>
 
 <script>
     Chart.register(window['chartjs-plugin-annotation']);
 
-    // --- 判斷裝置寬度 (用於動態調整字體) ---
     const isMobile = window.innerWidth < 600;
-    const fontBase = isMobile ? 10 : 12; // 手機版字體縮小
-    const fontBold = isMobile ? 11 : 13;
+    
+    // 簡化的字體設定
+    Chart.defaults.font.size = isMobile ? 10 : 12;
+    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
 
     // --- 數據庫 ---
+    // (為節省長度，此處數據結構與前版相同，但邏輯優化)
     const popBenchmarks = { 1970:1467, 1975:1615, 1980:1780, 1985:1925, 1990:2035, 1995:2130, 2000:2218, 2005:2270, 2010:2316, 2015:2349, 2019:2360, 2020:2356, 2021:2337, 2022:2326, 2023:2342, 2024:2340, 2025:2310 };
     const exactDependencyData = { 1970:74.0, 1975:66.0, 1980:58.7, 1985:51.5, 1990:47.9, 1995:45.6, 2000:42.1, 2005:39.0, 2010:35.9, 2012:34.7, 2015:35.3, 2016:36.2, 2017:37.0, 2018:37.9, 2019:38.9, 2020:40.2, 2021:41.3, 2022:42.2, 2023:43.1, 2024:44.3, 2025:45.8 };
     const exactYoungDepData = { 1970:69.6, 1975:60.5, 1980:52.0, 1985:43.4, 1990:38.8, 1995:35.0, 2000:30.2, 2005:25.4, 2010:20.7, 2012:19.8, 2015:19.3, 2016:18.8, 2017:18.2, 2018:17.7, 2019:17.5, 2020:17.6, 2021:17.5, 2022:17.2, 2023:17.0, 2024:16.7, 2025:16.5 };
     const exactOldDepData = { 1970:4.4, 1975:5.5, 1980:6.7, 1985:8.1, 1990:9.1, 1995:10.6, 2000:11.9, 2005:13.6, 2010:15.2, 2012:14.9, 2015:16.0, 2016:17.4, 2017:18.8, 2018:20.2, 2019:21.4, 2020:22.6, 2021:23.8, 2022:25.0, 2023:26.1, 2024:27.6, 2025:29.3 };
-    const vitalStats = [ {y:1970, b:39.4, d:10.4}, {y:1975, b:36.9, d:10.4}, {y:1976, b:42.5, d:10.6}, {y:1980, b:41.3, d:10.9}, {y:1985, b:34.6, d:11.2}, {y:1990, b:33.5, d:11.9}, {y:1995, b:32.9, d:12.6}, {y:2000, b:30.5, d:13.1}, {y:2005, b:20.5, d:13.9}, {y:2010, b:16.6, d:14.5}, {y:2012, b:22.9, d:15.4}, {y:2015, b:21.3, d:16.3}, {y:2016, b:20.8, d:17.2}, {y:2017, b:19.3, d:17.1}, {y:2018, b:18.1, d:17.2}, {y:2019, b:17.7, d:17.6}, {y:2020, b:16.5, d:17.3}, {y:2021, b:15.3, d:18.3}, {y:2022, b:13.8, d:20.7}, {y:2023, b:13.5, d:20.5}, {y:2024, b:13.4, d:20.2}, {y:2025, b:10.7, d:18.2} ];
+    const vitalStats = [ {y:1970,b:39.4,d:10.4},{y:1975,b:36.9,d:10.4},{y:1976,b:42.5,d:10.6},{y:1980,b:41.3,d:10.9},{y:1985,b:34.6,d:11.2},{y:1990,b:33.5,d:11.9},{y:1995,b:32.9,d:12.6},{y:2000,b:30.5,d:13.1},{y:2005,b:20.5,d:13.9},{y:2010,b:16.6,d:14.5},{y:2012,b:22.9,d:15.4},{y:2015,b:21.3,d:16.3},{y:2016,b:20.8,d:17.2},{y:2017,b:19.3,d:17.1},{y:2018,b:18.1,d:17.2},{y:2019,b:17.7,d:17.6},{y:2020,b:16.5,d:17.3},{y:2021,b:15.3,d:18.3},{y:2022,b:13.8,d:20.7},{y:2023,b:13.5,d:20.5},{y:2024,b:13.4,d:20.2},{y:2025,b:10.7,d:18.2} ];
 
     function interpolate(year, benchmarks) {
         if (benchmarks[year] !== undefined) return benchmarks[year];
         const keys = Object.keys(benchmarks).map(Number).sort((a,b)=>a-b);
         let prev = keys[0], next = keys[keys.length-1];
-        for(let k of keys) {
-            if (k <= year) prev = k;
-            if (k > year) { next = k; break; }
-        }
+        for(let k of keys) { if (k <= year) prev = k; if (k > year) { next = k; break; } }
         if (prev === next) return benchmarks[prev];
         const ratio = (year - prev) / (next - prev);
         return benchmarks[prev] + ratio * (benchmarks[next] - benchmarks[prev]);
     }
 
     const zodiacList = [ {n:'鼠',i:'🐭'}, {n:'牛',i:'🐮'}, {n:'虎',i:'🐯'}, {n:'兔',i:'🐰'}, {n:'龍',i:'🐲'}, {n:'蛇',i:'🐍'}, {n:'馬',i:'🐴'}, {n:'羊',i:'🐑'}, {n:'猴',i:'🐵'}, {n:'雞',i:'🐔'}, {n:'狗',i:'🐶'}, {n:'豬',i:'🐷'} ];
-
-    const years = [], birthData = [], deathData = [], populationData = [], depTotalData = [], depYoungData = [], depOldData = [], rawTableData = [];
+    const years=[], birthData=[], deathData=[], populationData=[], depTotalData=[], depYoungData=[], depOldData=[], rawTableData=[];
 
     for (let y = 1970; y <= 2025; y++) {
         years.push(y);
-        let pop = interpolate(y, popBenchmarks).toFixed(1);
-        populationData.push(pop);
-        let depTotal = interpolate(y, exactDependencyData).toFixed(1);
-        let depYoung = interpolate(y, exactYoungDepData).toFixed(1);
-        let depOld = interpolate(y, exactOldDepData).toFixed(1);
+        let pop = interpolate(y, popBenchmarks).toFixed(1); populationData.push(pop);
+        let depTotal = interpolate(y, exactDependencyData).toFixed(1); depTotalData.push(depTotal);
+        let depYoung = interpolate(y, exactYoungDepData).toFixed(1); depYoungData.push(depYoung);
+        let depOld = interpolate(y, exactOldDepData).toFixed(1); depOldData.push(depOld);
+
+        let bVal=0, dVal=0;
+        let vPrev=vitalStats[0], vNext=vitalStats[vitalStats.length-1];
+        for(let v of vitalStats) { if(v.y<=y) vPrev=v; if(v.y>y){ vNext=v; break; } }
+        if(vPrev.y===vNext.y) { bVal=vPrev.b; dVal=vPrev.d; }
+        else { let r=(y-vPrev.y)/(vNext.y-vPrev.y); bVal=vPrev.b+r*(vNext.b-vPrev.b); dVal=vPrev.d+r*(vNext.d-vPrev.d); }
         
-        depTotalData.push(depTotal);
-        depYoungData.push(depYoung);
-        depOldData.push(depOld);
-
-        let bVal = 0, dVal = 0;
-        let vPrev = vitalStats[0], vNext = vitalStats[vitalStats.length-1];
-        for(let v of vitalStats) {
-            if (v.y <= y) vPrev = v;
-            if (v.y > y) { vNext = v; break; }
-        }
-        if (vPrev.y === vNext.y) {
-            bVal = vPrev.b; dVal = vPrev.d;
-        } else {
-            let r = (y - vPrev.y) / (vNext.y - vPrev.y);
-            bVal = vPrev.b + r * (vNext.b - vPrev.b);
-            dVal = vPrev.d + r * (vNext.d - vPrev.d);
-        }
-        birthData.push(Math.round(bVal * 10000));
-        deathData.push(Math.round(dVal * 10000));
-
-        const zIndex = (y - 1900) % 12;
-        const zObj = zodiacList[zIndex];
-        const supportRatio = (100 / depTotal).toFixed(1);
-
-        rawTableData.unshift({
-            year: y, zodiac: zObj.n, icon: zObj.i, birth: Math.round(bVal * 10000), death: Math.round(dVal * 10000),
-            pop: pop, depT: depTotal, depY: depYoung, depO: depOld, support: supportRatio,
-            diff: Math.round(bVal * 10000) - Math.round(dVal * 10000)
-        });
+        birthData.push(Math.round(bVal*10000)); deathData.push(Math.round(dVal*10000));
+        const zIndex = (y-1900)%12; const zObj = zodiacList[zIndex]; const supportRatio = (100/depTotal).toFixed(1);
+        rawTableData.unshift({ year:y, zodiac:zObj.n, icon:zObj.i, birth:Math.round(bVal*10000), death:Math.round(dVal*10000), pop:pop, depT:depTotal, depY:depYoung, depO:depOld, support:supportRatio });
     }
 
     const ctx = document.getElementById('mainChart').getContext('2d');
@@ -348,12 +301,12 @@
         data: {
             labels: years,
             datasets: [
-                { label: '出生人數', data: birthData, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.1)', yAxisID: 'y', tension: 0.4, pointRadius: 0, fill: false },
-                { label: '死亡人數', data: deathData, borderColor: '#e74c3c', backgroundColor: 'rgba(231, 76, 60, 0.1)', yAxisID: 'y', tension: 0.4, pointRadius: 0, fill: false },
-                { label: '總扶養比', data: depTotalData, borderColor: '#9b59b6', yAxisID: 'y1', borderDash: [5, 5], tension: 0.3, pointRadius: 0, fill: false },
-                { label: '扶幼比', data: depYoungData, borderColor: '#2ecc71', yAxisID: 'y1', tension: 0.3, pointRadius: 0, fill: false },
-                { label: '扶老比', data: depOldData, borderColor: '#d35400', yAxisID: 'y1', tension: 0.3, pointRadius: 0, fill: false },
-                { label: '總人口數 (萬)', data: populationData, borderColor: '#f1c40f', backgroundColor: 'rgba(241, 196, 15, 0.1)', yAxisID: 'y2', tension: 0.4, borderWidth: 3, pointRadius: 0, fill: true }
+                { label: '出生', data: birthData, borderColor: '#2980b9', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
+                { label: '死亡', data: deathData, borderColor: '#c0392b', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y' },
+                { label: '總扶養比', data: depTotalData, borderColor: '#8e44ad', borderWidth: 2, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: true },
+                { label: '扶幼比', data: depYoungData, borderColor: '#27ae60', borderWidth: 2, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: true },
+                { label: '扶老比', data: depOldData, borderColor: '#d35400', borderWidth: 2, pointRadius: 0, tension: 0.3, yAxisID: 'y1' }, // 預設顯示
+                { label: '總人口', data: populationData, borderColor: '#f39c12', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y2', fill: true, backgroundColor: 'rgba(243, 156, 18, 0.1)', hidden: true }
             ]
         },
         options: {
@@ -363,81 +316,79 @@
             plugins: {
                 legend: { display: false },
                 tooltip: {
+                    padding: 10, backgroundColor: 'rgba(255,255,255,0.95)', titleColor:'#333', bodyColor:'#333', borderColor:'#ccc', borderWidth:1,
                     callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            let val = context.parsed.y;
-                            if (label === '總扶養比') return `🟣 平均 ${ (100 / val).toFixed(1) }人 養 1人`;
-                            if (label === '扶老比') return `🟤 平均 ${ (100 / val).toFixed(1) }人 養 1老人`;
-                            if (label === '扶幼比') return `🟢 平均 ${ (100 / val).toFixed(1) }人 養 1小孩`;
-                            if (label.includes('比')) return `${label}: ${val}%`;
-                            if (label.includes('人口數')) return `${label}: ${val} 萬人`;
-                            return `${label}: ${new Intl.NumberFormat('zh-TW').format(val)} 人`;
+                        title: (items) => `${items[0].label}年`,
+                        label: (ctx) => {
+                            const v = ctx.parsed.y;
+                            if (ctx.dataset.label === '出生' || ctx.dataset.label === '死亡') return `${ctx.dataset.label}: ${Math.round(v/1000)/10}萬人`;
+                            if (ctx.dataset.label.includes('比')) return `${ctx.dataset.label}: ${v}%`;
+                            return `${ctx.dataset.label}: ${v}萬`;
                         }
                     }
                 },
                 annotation: {
                     annotations: {
-                        milestone1993: {
-                            type: 'line', xMin: 23, xMax: 23, borderColor: '#f1c40f', borderWidth: 2, borderDash: [4, 4],
-                            label: { content: '高齡化(7%)', display: true, position: 'start', backgroundColor:'#f1c40f', color:'black', font:{size:fontBase}, yAdjust: 0 }
-                        },
-                        milestone2018: {
-                            type: 'line', xMin: 48, xMax: 48, borderColor: '#d35400', borderWidth: 2, borderDash: [4, 4],
-                            label: { content: '高齡(14%)', display: true, position: 'start', backgroundColor:'#d35400', font:{size:fontBase}, yAdjust: 60 } // 手機版錯位
-                        },
-                        milestone2025: {
-                            type: 'line', xMin: 55, xMax: 55, borderColor: '#c0392b', borderWidth: 2, borderDash: [4, 4],
-                            label: { content: '超高齡(20%)', display: true, position: 'start', backgroundColor:'#c0392b', font:{size:fontBase}, yAdjust: 0 }
-                        },
-                        line2015: {
-                            type: 'line', xMin: 45, xMax: 45, borderColor: '#27ae60', borderWidth: 1, borderDash:[3,3],
-                            label: { content: '勞動力高峰', display: true, position: 'end', yAdjust: 20, backgroundColor:'#27ae60', font:{size:fontBase} }
-                        },
-                        line2017: { 
-                            type: 'line', xMin: 47, xMax: 47, borderColor: '#7f8c8d', borderWidth: 1, borderDash: [2, 2],
-                            label: { display: true, content: '結構交叉', position: 'end', backgroundColor: 'rgba(0,0,0,0.7)', font:{size:fontBase}, yAdjust: 30 }
-                        },
-                        line2020: {
-                            type: 'line', xMin: 50, xMax: 50, borderColor: '#c0392b', borderWidth: 2,
-                            label: { display: true, content: '💀 生死交叉', position: 'center', backgroundColor: '#c0392b', color:'white', font:{size:fontBold}, yAdjust: -10 }
-                        },
-                        label1970Young: { type: 'label', xValue: 2, yValue: 68, content: ['1.4人','養1小孩'], color: '#27ae60', font: {size: fontBase, weight: 'bold'}, backgroundColor: 'rgba(255,255,255,0.7)' },
-                        label2025Young: { type: 'label', xValue: 55, yValue: 16, content: ['6.1人','養1小孩'], color: '#27ae60', font: {size: fontBase, weight: 'bold'}, xAdjust: -30 },
-                        label2025Old: { type: 'label', xValue: 55, yValue: 32, content: ['僅 3.4人','養1老人'], color: '#d35400', font: {size: fontBase, weight: 'bold'}, xAdjust: -35 }
+                        line2020: { type: 'line', xMin: 50, xMax: 50, borderColor: '#c0392b', borderWidth: 1, label: { display: true, content: '生死交叉', position: 'center', color: '#c0392b', backgroundColor:'white', font:{size:10} } },
+                        
+                        // 老化里程碑 (錯位排列，防止重疊)
+                        mark1993: { type: 'label', xValue: 23, yValue: 78, content: '1993: 7%', color: '#f39c12', font:{size:10}, display:false },
+                        mark2018: { type: 'label', xValue: 48, yValue: 60, content: '2018: 14%', color: '#d35400', font:{size:10}, display:true }, // 設為 true 因為預設開啟扶老比
+                        mark2025: { type: 'label', xValue: 55, yValue: 78, content: '2025: 20%', color: '#c0392b', font:{size:10}, display:true },
+                        
+                        label2025Old: { type: 'label', xValue: 55, yValue: 32, content: ['僅3.4人','養1老'], color: '#d35400', font:{size:10, weight:'bold'}, xAdjust:-25, display:true }
                     }
                 }
             },
             scales: {
-                x: { ticks: { maxTicksLimit: isMobile ? 8 : 12, font: {size: fontBase} } },
-                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: '人\n數', color: '#555', font: {lineHeight: 1.4, size: fontBase} }, grid: { color: '#f0f0f0' }, ticks:{font:{size:fontBase}} },
-                y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: '比\n率', color: '#9b59b6', font: {lineHeight: 1.4, size: fontBase} }, grid: { drawOnChartArea: false }, min: 0, max: 80, ticks:{font:{size:fontBase}} },
-                y2: { type: 'linear', display: true, position: 'right', title: { display: true, text: '總\n人\n口', color: '#f39c12', font: {lineHeight: 1.4, size: fontBase} }, grid: { drawOnChartArea: false }, min: 1400, max: 2500, ticks:{display: !isMobile} } // 手機版隱藏第三軸刻度以免擁擠
+                x: { ticks: { maxTicksLimit: 8, font: {size:10} }, grid: {display:false} },
+                y: { type: 'linear', position: 'left', title: {display:true, text:'人數(萬)', font:{size:10}}, ticks: { font:{size:10}, callback: v => v/10000 } },
+                y1: { type: 'linear', position: 'right', title: {display:true, text:'比率(%)', font:{size:10}}, grid:{display:false}, min:0, max:80 },
+                y2: { type: 'linear', position: 'right', display: false, min:1400, max:2500 } // 隱藏第三軸標示，保留線條功能
             }
         }
     });
 
-    const tableBody = document.querySelector('#dataTable tbody');
+    // 表格填充
+    const tbody = document.querySelector('#dataTable tbody');
     rawTableData.forEach(d => {
         const tr = document.createElement('tr');
-        if(d.zodiac==='龍') tr.classList.add('dragon-row');
-        let pressureClass = 'pressure-mid';
-        const ratio = parseFloat(d.support);
-        if (ratio >= 2.5) pressureClass = 'pressure-low'; if (ratio < 2.2) pressureClass = 'pressure-high';
-        tr.innerHTML = `<td><span class="zodiac-icon">${d.icon}</span>${d.year} <small>${d.zodiac}</small></td><td>${new Intl.NumberFormat('zh-TW').format(d.birth)}</td><td>${new Intl.NumberFormat('zh-TW').format(d.death)}</td><td style="font-weight:bold; color:#f39c12">${d.pop}</td><td class="${d.diff<0?'negative-val':''}" style="color:${d.diff>0?'#27ae60':''}"> ${d.diff>0?'+':''}${new Intl.NumberFormat('zh-TW').format(d.diff)}</td><td style="color:#2ecc71">${d.depY}</td><td style="color:#d35400">${d.depO}</td><td style="font-weight:bold; color:#9b59b6">${d.depT}</td><td><span class="pressure-tag ${pressureClass}">${d.support}人 養 1人</span></td>`;
-        tableBody.appendChild(tr);
+        tr.innerHTML = `
+            <td>${d.year}</td>
+            <td>${Math.round(d.birth/10000)}萬</td>
+            <td>${Math.round(d.death/10000)}萬</td>
+            <td>${d.pop}</td>
+            <td style="color:#d35400; font-weight:bold">${d.depO}%</td>
+            <td>${d.support}養1</td>
+        `;
+        tbody.appendChild(tr);
     });
 
-    function toggleDataset(index, checkbox) {
-        const isVisible = checkbox.checked;
+    // 切換功能
+    function toggleDataset(index, chip) {
+        const isVisible = chip.checked;
         chart.setDatasetVisibility(index, isVisible);
-        const btn = checkbox.parentElement;
-        isVisible ? btn.classList.add('active') : btn.classList.remove('active');
+        
+        // 視覺切換
+        const label = chip.parentElement;
+        isVisible ? label.classList.add('active') : label.classList.remove('active');
+
+        // 註記連動
         const ants = chart.options.plugins.annotation.annotations;
-        if(index === 0 || index === 1) if(index === 1 && ants.line2020) ants.line2020.display = isVisible;
-        if(index === 3) { if(ants.label1970Young) ants.label1970Young.display = isVisible; if(ants.label2025Young) ants.label2025Young.display = isVisible; }
-        if(index === 4) { if(ants.label2025Old) ants.label2025Old.display = isVisible; if(ants.milestone1993) ants.milestone1993.display = isVisible; if(ants.milestone2018) ants.milestone2018.display = isVisible; if(ants.milestone2025) ants.milestone2025.display = isVisible; if(ants.line2017) ants.line2017.display = isVisible; }
-        if(index === 5) if(ants.line2015) ants.line2015.display = isVisible;
+        
+        // 扶老比 (Index 4) -> 連動老化標籤
+        if (index === 4) {
+            ants.mark1993.display = isVisible;
+            ants.mark2018.display = isVisible;
+            ants.mark2025.display = isVisible;
+            ants.label2025Old.display = isVisible;
+        }
+        
+        // 出生/死亡 (Index 0,1) -> 連動生死交叉
+        if (index === 1) { // 用死亡線來控制
+            ants.line2020.display = isVisible;
+        }
+
         chart.update();
     }
 </script>
