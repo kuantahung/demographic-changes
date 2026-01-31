@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>台灣人口結構戰情室：全裝置響應版</title>
+    <title>台灣人口結構戰情室</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
@@ -32,7 +32,6 @@
 
         .container {
             width: 100%;
-            /* 手機版預設 */
             max-width: 100%; 
             margin: 0 auto;
             background: white;
@@ -41,72 +40,35 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        /* --- 響應式：電腦版容器變寬 --- */
         @media (min-width: 768px) {
-            .container {
-                max-width: 1200px; /* 電腦版最大寬度 */
-                padding: 30px;
-            }
+            .container { max-width: 1200px; padding: 30px; }
         }
 
         header { text-align: center; margin-bottom: 20px; }
         h1 { margin: 0; font-size: 1.3rem; color: #333; }
         .subtitle { color: #666; font-size: 0.85rem; margin-top: 5px; }
-        
-        @media (min-width: 768px) {
-            h1 { font-size: 1.8rem; }
-            .subtitle { font-size: 1rem; }
-        }
+        @media (min-width: 768px) { h1 { font-size: 1.8rem; } .subtitle { font-size: 1rem; } }
 
-        /* --- 卡片區 (核心響應式邏輯) --- */
-        .cards-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        /* 手機版：橫向滑動 */
+        /* --- 卡片區 --- */
+        .cards-container { display: flex; gap: 10px; margin-bottom: 20px; }
         @media (max-width: 767px) {
-            .cards-container {
-                overflow-x: auto;
-                padding-bottom: 5px;
-                scroll-snap-type: x mandatory;
-            }
+            .cards-container { overflow-x: auto; padding-bottom: 5px; scroll-snap-type: x mandatory; }
             .cards-container::-webkit-scrollbar { display: none; }
-            .stat-card {
-                flex: 0 0 140px; /* 手機版固定寬度 */
-                scroll-snap-align: start;
-            }
+            .stat-card { flex: 0 0 140px; scroll-snap-align: start; }
         }
-
-        /* 電腦版：Grid 自動排列，不用滑動 */
         @media (min-width: 768px) {
-            .cards-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 自動填滿 */
-                overflow-x: visible;
-            }
-            .stat-card {
-                flex: auto; /* 填滿格子 */
-            }
+            .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); overflow-x: visible; }
+            .stat-card { flex: auto; }
         }
 
         .stat-card {
-            background: #fff;
-            border: 1px solid #eee;
-            border-left-width: 4px;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            background: #fff; border: 1px solid #eee; border-left-width: 4px; border-radius: 8px;
+            padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center;
         }
         .stat-card h3 { margin: 0; font-size: 0.75rem; color: #777; }
         .stat-card .value { font-size: 1.2rem; font-weight: bold; margin: 4px 0; color: #333; }
         .stat-card .desc { font-size: 0.7rem; color: #999; }
 
-        /* 顏色邊框 */
         .c-green { border-left-color: var(--primary-green); }
         .c-brown { border-left-color: var(--primary-brown); }
         .c-red { border-left-color: var(--primary-red); }
@@ -114,37 +76,11 @@
         .c-blue { border-left-color: var(--primary-blue); }
 
         /* --- 按鈕區 --- */
-        .controls-panel {
-            background: #fffbf5;
-            border: 1px solid #ffe0b2;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+        .controls-panel { background: #fffbf5; border: 1px solid #ffe0b2; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
         .control-header { text-align: center; font-size: 0.9rem; color: #d35400; font-weight: bold; margin-bottom: 10px; }
-
-        .button-grid {
-            display: grid;
-            gap: 8px;
-        }
-
-        /* 手機版：3欄 (保持原本的緊湊) */
-        @media (max-width: 767px) {
-            .button-grid { grid-template-columns: 1fr 1fr 1fr; }
-        }
-
-        /* 電腦版：Flex 橫排 (像工具列一樣展開) */
-        @media (min-width: 768px) {
-            .button-grid {
-                display: flex;
-                justify-content: center;
-                gap: 15px;
-            }
-            .toggle-btn {
-                padding: 8px 20px; /* 電腦版按鈕大一點 */
-                font-size: 0.95rem;
-            }
-        }
+        .button-grid { display: grid; gap: 8px; }
+        @media (max-width: 767px) { .button-grid { grid-template-columns: 1fr 1fr 1fr; } }
+        @media (min-width: 768px) { .button-grid { display: flex; justify-content: center; gap: 15px; } .toggle-btn { padding: 8px 20px; font-size: 0.95rem; } }
 
         .toggle-btn {
             display: flex; align-items: center; justify-content: center; padding: 10px 4px;
@@ -164,26 +100,9 @@
         .toggle-btn.active.t-yellow { background: #f39c12; } .toggle-btn.active.t-yellow .chip-dot { background: white; }
 
         /* --- 圖表區 --- */
-        .chart-wrapper {
-            position: relative;
-            width: 100%;
-            margin-bottom: 25px;
-        }
-
-        /* 手機版：強制拉高，避免擠壓 */
-        @media (max-width: 767px) {
-            .chart-wrapper {
-                height: 550px;
-                min-height: 550px;
-            }
-        }
-
-        /* 電腦版：使用適當的比例，不需過度拉高 */
-        @media (min-width: 768px) {
-            .chart-wrapper {
-                height: 600px;
-            }
-        }
+        .chart-wrapper { position: relative; width: 100%; margin-bottom: 25px; }
+        @media (max-width: 767px) { .chart-wrapper { height: 550px; min-height: 550px; } }
+        @media (min-width: 768px) { .chart-wrapper { height: 600px; } }
 
         /* 說明與表格 */
         .info-box { background: #f8f9fa; padding: 15px; border-radius: 8px; font-size: 0.9rem; color: #555; line-height: 1.6; border: 1px solid #eee; margin-bottom:20px; }
@@ -202,10 +121,15 @@
 <div class="container">
     <header>
         <h1>台灣人口戰情室</h1>
-        <div class="subtitle">1970-2025 世代負擔大反轉 (響應式版)</div>
+        <div class="subtitle">1970-2025 世代負擔大反轉</div>
     </header>
 
     <div class="cards-container">
+        <div class="stat-card c-dark">
+            <h3>生死交叉 (死>生)</h3>
+            <div class="value">2020年</div>
+            <div class="desc">自然增加率轉負</div>
+        </div>
         <div class="stat-card c-green">
             <h3>2025 扶幼負擔</h3>
             <div class="value">6.1人</div>
@@ -221,11 +145,6 @@
             <div class="value">老人>小孩</div>
             <div class="desc">養老壓力超越養幼</div>
         </div>
-        <div class="stat-card c-dark">
-            <h3>1970 對比</h3>
-            <div class="value">1.4人</div>
-            <div class="desc">當年養 1 個小孩</div>
-        </div>
         <div class="stat-card c-blue">
             <h3>出生最高峰</h3>
             <div class="value">1976年</div>
@@ -234,22 +153,22 @@
     </div>
 
     <div class="controls-panel">
-        <div class="control-header">▼ 點擊切換圖層 (預設開啟: 扶幼/扶老) ▼</div>
+        <div class="control-header">▼ 點擊切換圖層 ▼</div>
         <div class="button-grid">
-            <label class="toggle-btn t-blue">
-                <input type="checkbox" onchange="toggleDataset(0, this)">
+            <label class="toggle-btn t-blue active">
+                <input type="checkbox" checked onchange="toggleDataset(0, this)">
                 <span class="chip-dot"></span>出生
             </label>
-            <label class="toggle-btn t-red">
-                <input type="checkbox" onchange="toggleDataset(1, this)">
+            <label class="toggle-btn t-red active">
+                <input type="checkbox" checked onchange="toggleDataset(1, this)">
                 <span class="chip-dot"></span>死亡
             </label>
-            <label class="toggle-btn t-brown active">
-                <input type="checkbox" checked onchange="toggleDataset(4, this)">
+            <label class="toggle-btn t-brown">
+                <input type="checkbox" onchange="toggleDataset(4, this)">
                 <span class="chip-dot"></span>扶老比
             </label>
-            <label class="toggle-btn t-green active">
-                <input type="checkbox" checked onchange="toggleDataset(3, this)">
+            <label class="toggle-btn t-green">
+                <input type="checkbox" onchange="toggleDataset(3, this)">
                 <span class="chip-dot"></span>扶幼比
             </label>
             <label class="toggle-btn t-purple">
@@ -268,11 +187,11 @@
     </div>
 
     <div class="info-box">
-        💡 <strong>如何看圖？</strong>
+        💡 <strong>操作提示：</strong>
         <ul>
-            <li><strong>綠線 (小孩)：</strong>位置越低代表負擔越輕。2025年約 6 人養 1 小孩。</li>
-            <li><strong>褐線 (老人)：</strong>位置越高代表負擔越重。2025年僅 3.4 人就要養 1 老人。</li>
-            <li><strong>交叉點：</strong>2017年兩線交叉，代表台灣正式進入「顧老比顧小還累」的時代。</li>
+            <li>預設顯示 🔵 <strong>出生</strong> 與 🔴 <strong>死亡</strong> 曲線，直觀呈現人口自然消長。</li>
+            <li>點擊上方按鈕可疊加顯示「扶養壓力」或「總人口」趨勢。</li>
+            <li><strong>生死交叉：</strong>2020年起死亡人數超越出生人數（紅線高於藍線），進入負成長時代。</li>
         </ul>
     </div>
 
@@ -293,10 +212,8 @@
 </div>
 
 <script>
-    // 等待 DOM 載入
     document.addEventListener('DOMContentLoaded', function() {
         
-        // 判斷裝置設定 (僅用於圖表字體大小，佈局由CSS控制)
         const isMobile = window.innerWidth < 768;
         Chart.defaults.font.size = isMobile ? 11 : 13;
         Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial';
@@ -350,17 +267,17 @@
             data: {
                 labels: years,
                 datasets: [
-                    { label: '出生', data: birthData, borderColor: '#2980b9', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y', hidden: true },
-                    { label: '死亡', data: deathData, borderColor: '#c0392b', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y', hidden: true },
+                    { label: '出生', data: birthData, borderColor: '#2980b9', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y', hidden: false }, // 預設開啟
+                    { label: '死亡', data: deathData, borderColor: '#c0392b', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y', hidden: false }, // 預設開啟
                     { label: '總扶養比', data: depTotalData, borderColor: '#8e44ad', borderWidth: 2, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: true },
-                    { label: '扶幼比', data: depYoungData, borderColor: '#27ae60', borderWidth: 3, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: false },
-                    { label: '扶老比', data: depOldData, borderColor: '#d35400', borderWidth: 3, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: false },
+                    { label: '扶幼比', data: depYoungData, borderColor: '#27ae60', borderWidth: 3, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: true },
+                    { label: '扶老比', data: depOldData, borderColor: '#d35400', borderWidth: 3, pointRadius: 0, tension: 0.3, yAxisID: 'y1', hidden: true },
                     { label: '總人口', data: populationData, borderColor: '#f39c12', borderWidth: 2, pointRadius: 0, tension: 0.4, yAxisID: 'y2', hidden: true }
                 ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // 關鍵：允許自定義高度
+                maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: { display: false },
@@ -380,11 +297,14 @@
                     },
                     annotation: {
                         annotations: {
-                            label1970Y: { type: 'label', xValue: 2, yValue: 68, content: ['1.4人','養1幼'], color: '#27ae60', font: {size: 11, weight: 'bold'}, backgroundColor: 'rgba(255,255,255,0.8)', display:true },
-                            label2025Y: { type: 'label', xValue: 55, yValue: 16, content: ['6.1人','養1幼'], color: '#27ae60', font: {size: 11, weight: 'bold'}, xAdjust: -30, display:true },
-                            label2025O: { type: 'label', xValue: 55, yValue: 32, content: ['3.4人','養1老'], color: '#d35400', font: {size: 11, weight: 'bold'}, xAdjust: -30, display:true },
-                            line2017: { type: 'line', xMin: 47, xMax: 47, borderColor: '#7f8c8d', borderWidth: 1, borderDash: [2, 2], label: { display: true, content: '結構交叉', position: 'end', backgroundColor: 'rgba(0,0,0,0.6)', font:{size:10}, yAdjust: 30 }, display:true },
-                            line2020: { type: 'line', xMin: 50, xMax: 50, borderColor: '#c0392b', borderWidth: 1, label: { display: true, content: '生死交叉', position: 'center', backgroundColor: '#c0392b', color:'white', font:{size:10}, yAdjust: -10 }, display:false }
+                            // 預設關閉的註記
+                            label1970Y: { type: 'label', xValue: 2, yValue: 68, content: ['1.4人','養1幼'], color: '#27ae60', font: {size: 11, weight: 'bold'}, backgroundColor: 'rgba(255,255,255,0.8)', display:false },
+                            label2025Y: { type: 'label', xValue: 55, yValue: 16, content: ['6.1人','養1幼'], color: '#27ae60', font: {size: 11, weight: 'bold'}, xAdjust: -30, display:false },
+                            label2025O: { type: 'label', xValue: 55, yValue: 32, content: ['3.4人','養1老'], color: '#d35400', font: {size: 11, weight: 'bold'}, xAdjust: -30, display:false },
+                            line2017: { type: 'line', xMin: 47, xMax: 47, borderColor: '#7f8c8d', borderWidth: 1, borderDash: [2, 2], label: { display: true, content: '結構交叉', position: 'end', backgroundColor: 'rgba(0,0,0,0.6)', font:{size:10}, yAdjust: 30 }, display:false },
+                            
+                            // 預設開啟的註記 (生死交叉)
+                            line2020: { type: 'line', xMin: 50, xMax: 50, borderColor: '#c0392b', borderWidth: 1, label: { display: true, content: '生死交叉', position: 'center', backgroundColor: '#c0392b', color:'white', font:{size:10}, yAdjust: -10 }, display:true }
                         }
                     }
                 },
@@ -392,7 +312,7 @@
                     x: { ticks: { maxTicksLimit: 8, font: {size:10} }, grid: {display:false} },
                     y: { type: 'linear', position: 'left', title: {display:true, text:'人 (萬)'}, ticks: { font:{size:10}, callback: v => v/10000 } },
                     y1: { type: 'linear', position: 'right', title: {display:true, text:'比率 (%)'}, grid:{display:false}, min:0, max:80 },
-                    y2: { type: 'linear', position: 'right', display: false, min:1400, max:2500 } // 隱藏第三軸標示
+                    y2: { type: 'linear', position: 'right', display: false, min:1400, max:2500 }
                 }
             }
         });
